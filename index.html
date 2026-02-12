@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Shams ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+  overflow: hidden;
+  text-align: center;
+}
+
+h1 {
+  color: #b3003c;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+img {
+  width: 160px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+}
+
+.buttons {
+  position: relative;
+  margin-top: 20px;
+}
+
+button {
+  padding: 18px 40px;
+  font-size: 26px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 10px;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+#yes {
+  background: #28a745;
+  color: white;
+  font-size: 28px;
+}
+
+#no {
+  background: #dc3545;
+  color: white;
+  position: absolute;
+}
+
+/* ❤️ Falling Hearts */
+.heart {
+  position: absolute;
+  top: -10px;
+  font-size: 24px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Shams, will you be my Valentine? 💖</h1>
+
+<img src="https://media.tenor.com/7x1m7XH2K8YAAAAC/cute-anime.gif">
+
+<div class="buttons">
+  <button id="yes">Yes 😍</button>
+  <button id="no">No 😢</button>
+</div>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+
+let yesSize = 28;
+
+// زرار No يهرب
+function moveNo() {
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 120);
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+
+  // كل مرة No يهرب، Yes يكبر 😈
+  yesSize += 5;
+  yesBtn.style.fontSize = yesSize + "px";
+}
+
+// للكمبيوتر
+noBtn.addEventListener("mouseover", moveNo);
+
+// للموبايل
+noBtn.addEventListener("touchstart", moveNo);
+
+// لما تضغط Yes ❤️
+yesBtn.onclick = function () {
+  document.body.innerHTML = `
+    <h1 style="color:white; font-size:3rem;">
+      Yaaay 😍 Shams said YES! 💍❤️
+    </h1>
+    <h2 style="color:white;">
+      Best Valentine ever 💖
+    </h2>
+  `;
+};
+
+// ❤️ قلوب بتقع
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "❤️";
+
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 5000);
+}
+
+setInterval(createHeart, 300);
+</script>
+
+</body>
+</html>
