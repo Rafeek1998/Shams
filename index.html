@@ -82,7 +82,7 @@
 <body>
   <h1>Shams, will you be my Valentine? 💖</h1>
 
-  <div class="buttons" id="btnWrap">
+  <div class="buttons">
     <button id="yes" type="button">Yes 😍</button>
     <button id="no" type="button">No 😢</button>
   </div>
@@ -90,7 +90,6 @@
 <script>
   const yesBtn = document.getElementById("yes");
   const noBtn  = document.getElementById("no");
-  const wrap   = document.getElementById("btnWrap");
 
   let yesSize = 26;
 
@@ -112,21 +111,13 @@
     noBtn.style.top  = y + "px";
     noBtn.style.transform = "none";
     noBtn.style.zIndex = 9999;
-
-    setTimeout(() => {
-      noBtn.style.position = "static";
-      noBtn.style.left = "";
-      noBtn.style.top  = "";
-      noBtn.style.zIndex = "";
-      wrap.appendChild(noBtn);
-    }, 900);
   }
 
   noBtn.addEventListener("pointerdown", moveNo);
 
   yesBtn.addEventListener("click", ()=>{
     document.body.innerHTML =
-      "<h1 style='color:white;font-size:3rem;text-shadow:0 12px 30px rgba(0,0,0,.25);'>Yaaay 😍 El Fanana said YES! 💍❤️</h1>";
+      "<h1 style='color:white;font-size:3rem;text-shadow:0 12px 30px rgba(0,0,0,.25);'>Yaaay 😍 Shams said YES! 💍❤️</h1>";
   });
 
   function createHeart(){
