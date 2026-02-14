@@ -6,122 +6,144 @@
 <title>For Shams ❤️</title>
 
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial;
-  background:linear-gradient(135deg,#ffb6c1,#ff69b4);
-  overflow:hidden;
-  text-align:center;
-}
-
-h1{
-  color:#b3003c;
-  font-size:2.5rem;
-  margin-bottom:30px;
-}
-
-.buttons{
-  display:flex;
-  gap:20px;
-  position:relative;
-}
-
-button{
-  padding:18px 40px;
-  font-size:26px;
-  border:none;
-  border-radius:15px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:0.2s;
-  touch-action: manipulation;
-}
-
-#yes{
-  background:#24a148;
-  color:white;
-}
-
-#no{
-  background:#dc3545;
-  color:white;
-  position:absolute;
-}
-
-/* ❤️ Falling hearts */
-.heart{
-  position:fixed;
-  top:-20px;
-  font-size:22px;
-  pointer-events:none;
-  animation: fall linear forwards;
-}
-
-@keyframes fall{
-  to{
-    transform: translateY(110vh);
-    opacity:0;
+  body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#ffb6c1,#ff69b4);
+    overflow:hidden;
+    text-align:center;
+    padding: 20px;
   }
-}
+
+  h1{
+    color:#b3003c;
+    font-size:2.3rem;
+    margin:0 0 24px;
+    text-shadow: 0 6px 18px rgba(0,0,0,.12);
+  }
+
+  .buttons{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    z-index: 2;
+  }
+
+  button{
+    padding:18px 40px;
+    font-size:26px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    font-weight:bold;
+    touch-action: manipulation;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease;
+    box-shadow:0 16px 35px rgba(0,0,0,.18);
+  }
+
+  #yes{
+    background:#24a148;
+    color:white;
+  }
+
+  #no{
+    background:#dc3545;
+    color:white;
+  }
+
+  .heart{
+    position:fixed;
+    top:-20px;
+    font-size:22px;
+    pointer-events:none;
+    animation: fall linear forwards;
+    z-index:1;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+  }
+
+  @keyframes fall{
+    to{
+      transform: translateY(110vh);
+      opacity:0;
+    }
+  }
 </style>
 </head>
 
 <body>
+  <h1>Shams, will you be my Valentine? 💖</h1>
 
-<h1>Shams, will you be my Valentine? 💖</h1>
-
-<div class="buttons">
-  <button id="yes">Yes 😍</button>
-  <button id="no">No 😢</button>
-</div>
+  <div class="buttons" id="btnWrap">
+    <button id="yes" type="button">Yes 😍</button>
+    <button id="no" type="button">No 😢</button>
+  </div>
 
 <script>
-const yesBtn = document.getElementById("yes");
-const noBtn  = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const noBtn  = document.getElementById("no");
+  const wrap   = document.getElementById("btnWrap");
 
-let yesSize = 26;
+  let yesSize = 26;
 
-  
-noBtn.style.left = "120px";
-noBtn.style.top = "0px";
+  function moveNo(e){
+    if(e) e.preventDefault();
 
-function moveNo(){
-  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    yesSize += 8;
+    yesBtn.style.fontSize = yesSize + "px";
 
-  noBtn.style.position = "fixed";
-  noBtn.style.left = x + "px";
-  noBtn.style.top  = y + "px";
+    const pad = 12;
+    const maxX = Math.max(0, window.innerWidth  - noBtn.offsetWidth  - pad);
+    const maxY = Math.max(0, window.innerHeight - noBtn.offsetHeight - pad);
 
-  yesSize += 6;
-  yesBtn.style.fontSize = yesSize + "px";
-}
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
-noBtn.addEventListener("pointerdown", moveNo);
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top  = y + "px";
+    noBtn.style.transform = "none";
+    noBtn.style.zIndex = 9999;
 
-yesBtn.addEventListener("click", ()=>{
-  document.body.innerHTML =
-    "<h1 style='color:white;font-size:3rem;'>Yaaay 😍 El Fanana said YES! 💍❤️</h1>";
-});
+    setTimeout(() => {
+      noBtn.style.position = "static";
+      noBtn.style.left = "";
+      noBtn.style.top  = "";
+      noBtn.style.zIndex = "";
+      wrap.appendChild(noBtn);
+    }, 900);
+  }
 
-// ❤️ Hearts
-function createHeart(){
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.textContent = "❤️";
-  heart.style.left = Math.random() * window.innerWidth + "px";
-  heart.style.animationDuration = (2 + Math.random() * 3) + "s";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),5000);
-}
+  noBtn.addEventListener("pointerdown", moveNo);
 
-setInterval(createHeart,250);
+  yesBtn.addEventListener("click", ()=>{
+    document.body.innerHTML =
+      "<h1 style='color:white;font-size:3rem;text-shadow:0 12px 30px rgba(0,0,0,.25);'>Yaaay 😍 Shams said YES! 💍❤️</h1>";
+  });
+
+  function createHeart(){
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "❤️";
+
+    heart.style.left = (Math.random() * window.innerWidth) + "px";
+    heart.style.fontSize = (18 + Math.random() * 22) + "px";
+    heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(), 5500);
+  }
+
+  setInterval(createHeart, 250);
 </script>
-
 </body>
 </html>
