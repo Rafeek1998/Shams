@@ -1,137 +1,187 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Shams ❤️</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For Shams ❤️</title>
+  <style>
+    :root { --pink1:#ffb6c1; --pink2:#ff69b4; --red:#b3003c; }
+    * { box-sizing:border-box; }
+    body{
+      margin:0; min-height:100vh;
+      display:flex; flex-direction:column;
+      justify-content:center; align-items:center;
+      font-family: system-ui, Arial, sans-serif;
+      background: radial-gradient(circle at 30% 20%, #ffd6e1, transparent 55%),
+                  linear-gradient(135deg,var(--pink1),var(--pink2));
+      overflow:hidden; text-align:center;
+      padding: 24px 14px;
+    }
+    h1{
+      margin:0 0 18px;
+      color:var(--red);
+      font-size: clamp(24px, 5vw, 44px);
+      text-shadow: 0 6px 18px rgba(0,0,0,.12);
+    }
+    .sub{
+      margin:0 0 18px;
+      color: rgba(179,0,60,.8);
+      font-size: clamp(14px, 2.8vw, 18px);
+    }
 
-<style>
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ffb6c1, #ff69b4);
-  overflow: hidden;
-  text-align: center;
-}
+    /* stage holds buttons and lets #no roam anywhere on screen */
+    #stage{
+      position: fixed;
+      inset: 0;
+      pointer-events: none; /* allow only buttons to be interactive */
+    }
 
-h1 {
-  color: #b3003c;
-  font-size: 2.5rem;
-}
+    .btn{
+      pointer-events: auto;
+      border:0;
+      border-radius: 16px;
+      padding: 18px 34px;
+      font-weight: 800;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 16px 35px rgba(0,0,0,.18);
+      transform: translateZ(0);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .btn:active{ transform: scale(.98); }
 
-.buttons {
-  position: relative;
-  margin-top: 30px;
-}
+    #yes{
+      position: fixed;
+      left: 50%;
+      bottom: 18%;
+      transform: translateX(-110%);
+      background:#24a148;
+      color:white;
+    }
+    #no{
+      position: fixed;
+      left: 50%;
+      bottom: 18%;
+      transform: translateX(10%);
+      background:#dc3545;
+      color:white;
+    }
 
-button {
-  padding: 18px 40px;
-  font-size: 26px;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  margin: 10px;
-  font-weight: bold;
-  transition: 0.2s;
-}
+    /* falling hearts */
+    .heart{
+      position: fixed;
+      top: -20px;
+      font-size: 22px;
+      opacity: .95;
+      pointer-events:none;
+      animation: fall linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+    }
+    @keyframes fall{
+      to { transform: translateY(110vh); opacity:0; }
+    }
 
-#yes {
-  background: #28a745;
-  color: white;
-}
-
-#no {
-  background: #dc3545;
-  color: white;
-  position: absolute;
-}
-
-/* ❤️ Falling Hearts */
-.heart {
-  position: absolute;
-  top: -10px;
-  font-size: 24px;
-  animation: fall linear forwards;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(110vh);
-    opacity: 0;
-  }
-}
-</style>
+    /* success screen */
+    .success{
+      color:white;
+      text-shadow: 0 12px 30px rgba(0,0,0,.25);
+      padding: 28px 18px;
+    }
+    .success h2{
+      margin:0 0 10px;
+      font-size: clamp(28px, 6vw, 54px);
+    }
+    .success p{
+      margin:0;
+      font-size: clamp(16px, 3vw, 20px);
+    }
+  </style>
 </head>
 
 <body>
+  <h1>Shams, will you be my Valentine? 💖</h1>
+  <p class="sub">Tap “Yes” 😄</p>
 
-<h1>Shams, will you be my Valentine? 💖</h1>
+  <div id="stage">
+    <button class="btn" id="yes">Yes 😍</button>
+    <button class="btn" id="no">No 😢</button>
+  </div>
 
-<div class="buttons">
-  <button id="yes">Yes 😍</button>
-  <button id="no">No 😢</button>
-</div>
+  <script>
+    const yesBtn = document.getElementById("yes");
+    const noBtn  = document.getElementById("no");
 
-<script>
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
+    // make sure #no has a starting position
+    let yesScale = 1;
 
-let yesSize = 26;
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-// زرار No يتحرك كل ما تضغط عليه
-function moveNo() {
-  const x = Math.random() * (window.innerWidth - 120);
-  const y = Math.random() * (window.innerHeight - 120);
+    function moveNo() {
+      const pad = 12;
 
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
+      // button sizes (works on mobile too)
+      const w = noBtn.offsetWidth;
+      const h = noBtn.offsetHeight;
 
-  // كل مرة تضغط No يكبر Yes 😈
-  yesSize += 6;
-  yesBtn.style.fontSize = yesSize + "px";
-}
+      const maxX = window.innerWidth  - w - pad;
+      const maxY = window.innerHeight - h - pad;
 
-// يتحرك لما تضغط عليه
-noBtn.addEventListener("click", moveNo);
+      const x = Math.random() * clamp(maxX, 0, maxX);
+      const y = Math.random() * clamp(maxY, 0, maxY);
 
-// للموبايل
-noBtn.addEventListener("touchstart", moveNo);
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.bottom = "auto";
+      noBtn.style.transform = "none";
 
-// لما تضغط Yes ❤️
-yesBtn.onclick = function () {
-  document.body.innerHTML = `
-    <h1 style="color:white; font-size:3rem;">
-      Yaaay 😍 Shams said YES! 💍❤️
-    </h1>
-    <h2 style="color:white;">
-      Best Valentine Ever 💖
-    </h2>
-  `;
-};
+      // grow YES a bit each escape
+      yesScale = Math.min(2.8, yesScale + 0.12);
+      yesBtn.style.transform = translateX(-110%) scale(${yesScale});
+    }
 
-// ❤️ قلوب بتقع
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "❤️";
+    // On mobile/desktop: move on pointerdown (prevents click delay)
+    noBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      moveNo();
+    });
 
-  heart.style.left = Math.random() * window.innerWidth + "px";
-  heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+    // Also move if user just gets near it (desktop)
+    noBtn.addEventListener("mouseenter", moveNo);
 
-  document.body.appendChild(heart);
+    // YES action
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <div class="success">
+          <h2>Yaaay 😍</h2>
+          <p>Shams said YES! 💍❤️</p>
+        </div>
+      `;
+    });
 
-  setTimeout(() => {
-    heart.remove();
-  }, 5000);
-}
+    // Falling hearts
+    function heart(){
+      const el = document.createElement("div");
+      el.className = "heart";
+      el.textContent = "❤️";
+      el.style.left = (Math.random() * window.innerWidth) + "px";
+      el.style.animationDuration = (2.2 + Math.random() * 2.8) + "s";
+      el.style.fontSize = (18 + Math.random() * 18) + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5200);
+    }
+    setInterval(heart, 260);
 
-setInterval(createHeart, 300);
-</script>
-
+    // If rotated/resized, keep NO on-screen
+    window.addEventListener("resize", () => {
+      // if NO already moved, pull it back inside bounds
+      const rect = noBtn.getBoundingClientRect();
+      if(rect.right > window.innerWidth || rect.bottom > window.innerHeight){
+        moveNo();
+      }
+    });
+  </script>
 </body>
 </html>
