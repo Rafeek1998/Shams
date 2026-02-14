@@ -22,6 +22,7 @@
     h1{
       color:#b3003c;
       font-size:2.5rem;
+      margin-bottom:30px;
     }
 
     button{
@@ -33,6 +34,7 @@
       margin:15px;
       font-weight:bold;
       touch-action: manipulation;
+      transition: 0.2s;
     }
 
     #yes{
@@ -59,16 +61,25 @@
   const yesBtn = document.getElementById("yes");
   const noBtn  = document.getElementById("no");
 
+  let yesSize = 26; // starting size
+
   function moveNo(){
+    // Move NO randomly
     const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
     const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
 
     noBtn.style.left = x + "px";
     noBtn.style.top  = y + "px";
+
+    // YES grows bigger each time 😈
+    yesSize += 8;
+    yesBtn.style.fontSize = yesSize + "px";
   }
 
+  // NO runs away when touched/clicked
   noBtn.addEventListener("pointerdown", moveNo);
 
+  // YES click action ❤️
   yesBtn.addEventListener("click", ()=>{
     document.body.innerHTML =
       "<h1 style='color:white;font-size:3rem;'>Yaaay 😍 Shams said YES! 💍❤️</h1>";
