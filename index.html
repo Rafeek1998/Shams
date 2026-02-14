@@ -6,7 +6,7 @@
   <title>For Shams ❤️</title>
   <style>
     :root { --pink1:#ffb6c1; --pink2:#ff69b4; --red:#b3003c; }
-    * { box-sizing:border-box; }
+    *{ box-sizing:border-box; }
     body{
       margin:0; min-height:100vh;
       display:flex; flex-direction:column;
@@ -15,29 +15,27 @@
       background: radial-gradient(circle at 30% 20%, #ffd6e1, transparent 55%),
                   linear-gradient(135deg,var(--pink1),var(--pink2));
       overflow:hidden; text-align:center;
-      padding: 24px 14px;
+      padding:24px 14px;
     }
     h1{
-      margin:0 0 18px;
+      margin:0 0 14px;
       color:var(--red);
       font-size: clamp(24px, 5vw, 44px);
       text-shadow: 0 6px 18px rgba(0,0,0,.12);
     }
     .sub{
       margin:0 0 18px;
-      color: rgba(179,0,60,.8);
+      color: rgba(179,0,60,.85);
       font-size: clamp(14px, 2.8vw, 18px);
     }
 
-    /* stage holds buttons and lets #no roam anywhere on screen */
+    /* ✅ خليها تقدر تستقبل clicks عادي */
     #stage{
       position: fixed;
       inset: 0;
-      pointer-events: none; /* allow only buttons to be interactive */
     }
 
     .btn{
-      pointer-events: auto;
       border:0;
       border-radius: 16px;
       padding: 18px 34px;
@@ -45,11 +43,10 @@
       font-size: 26px;
       cursor: pointer;
       box-shadow: 0 16px 35px rgba(0,0,0,.18);
-      transform: translateZ(0);
-      user-select: none;
+      user-select:none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      transition: transform .12s ease, filter .12s ease;
+      transition: transform .12s ease;
     }
     .btn:active{ transform: scale(.98); }
 
@@ -59,7 +56,7 @@
       bottom: 18%;
       transform: translateX(-110%);
       background:#24a148;
-      color:white;
+      color:#fff;
     }
     #no{
       position: fixed;
@@ -67,15 +64,12 @@
       bottom: 18%;
       transform: translateX(10%);
       background:#dc3545;
-      color:white;
+      color:#fff;
     }
 
-    /* falling hearts */
     .heart{
       position: fixed;
       top: -20px;
-      font-size: 22px;
-      opacity: .95;
       pointer-events:none;
       animation: fall linear forwards;
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
@@ -84,20 +78,13 @@
       to { transform: translateY(110vh); opacity:0; }
     }
 
-    /* success screen */
     .success{
       color:white;
       text-shadow: 0 12px 30px rgba(0,0,0,.25);
       padding: 28px 18px;
     }
-    .success h2{
-      margin:0 0 10px;
-      font-size: clamp(28px, 6vw, 54px);
-    }
-    .success p{
-      margin:0;
-      font-size: clamp(16px, 3vw, 20px);
-    }
+    .success h2{ margin:0 0 10px; font-size: clamp(28px, 6vw, 54px); }
+    .success p{ margin:0; font-size: clamp(16px, 3vw, 20px); }
   </style>
 </head>
 
@@ -106,52 +93,49 @@
   <p class="sub">Tap “Yes” 😄</p>
 
   <div id="stage">
-    <button class="btn" id="yes">Yes 😍</button>
-    <button class="btn" id="no">No 😢</button>
+    <button class="btn" id="yes" type="button">Yes 😍</button>
+    <button class="btn" id="no"  type="button">No 😢</button>
   </div>
 
   <script>
     const yesBtn = document.getElementById("yes");
     const noBtn  = document.getElementById("no");
 
-    // make sure #no has a starting position
     let yesScale = 1;
-
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
     function moveNo() {
       const pad = 12;
-
-      // button sizes (works on mobile too)
       const w = noBtn.offsetWidth;
       const h = noBtn.offsetHeight;
 
-      const maxX = window.innerWidth  - w - pad;
-      const maxY = window.innerHeight - h - pad;
+      const maxX = Math.max(0, window.innerWidth  - w - pad);
+      const maxY = Math.max(0, window.innerHeight - h - pad);
 
-      const x = Math.random() * clamp(maxX, 0, maxX);
-      const y = Math.random() * clamp(maxY, 0, maxY);
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
 
       noBtn.style.left = x + "px";
       noBtn.style.top  = y + "px";
       noBtn.style.bottom = "auto";
       noBtn.style.transform = "none";
 
-      // grow YES a bit each escape
       yesScale = Math.min(2.8, yesScale + 0.12);
       yesBtn.style.transform = translateX(-110%) scale(${yesScale});
     }
 
-    // On mobile/desktop: move on pointerdown (prevents click delay)
+    // ✅ يخلي NO يهرب على كل الأجهزة
     noBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       moveNo();
     });
 
-    // Also move if user just gets near it (desktop)
-    noBtn.addEventListener("mouseenter", moveNo);
+    // احتياط لو متصفح قديم
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNo();
+    });
 
-    // YES action
+    // ✅ YES يبدّل الصفحة
     yesBtn.addEventListener("click", () => {
       document.body.innerHTML = `
         <div class="success">
@@ -161,7 +145,7 @@
       `;
     });
 
-    // Falling hearts
+    // ❤️ قلوب
     function heart(){
       const el = document.createElement("div");
       el.className = "heart";
@@ -173,15 +157,6 @@
       setTimeout(() => el.remove(), 5200);
     }
     setInterval(heart, 260);
-
-    // If rotated/resized, keep NO on-screen
-    window.addEventListener("resize", () => {
-      // if NO already moved, pull it back inside bounds
-      const rect = noBtn.getBoundingClientRect();
-      if(rect.right > window.innerWidth || rect.bottom > window.innerHeight){
-        moveNo();
-      }
-    });
   </script>
 </body>
 </html>
