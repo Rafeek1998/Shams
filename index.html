@@ -1,123 +1,79 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>شمس ❤️</title>
-  <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0; min-height:100vh;
-      display:flex; flex-direction:column;
-      justify-content:center; align-items:center;
-      font-family: system-ui, Arial, sans-serif;
-      background: linear-gradient(135deg,#ffb6c1,#ff69b4);
-      overflow:hidden; text-align:center;
-      padding:24px 12px;
-    }
-    h1{ margin:0 0 16px; color:#b3003c; font-size:clamp(24px,5vw,44px); }
-    #msg{ margin:0 0 18px; color:rgba(179,0,60,.85); }
+  <title>For Shams ❤️</title>
 
-    .wrap{ position:relative; height:120px; width:min(520px, 92vw); }
+  <style>
+    body{
+      margin:0;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      font-family:Arial;
+      background:linear-gradient(135deg,#ffb6c1,#ff69b4);
+      overflow:hidden;
+      text-align:center;
+    }
+
+    h1{
+      color:#b3003c;
+      font-size:2.5rem;
+    }
+
     button{
-      border:0; border-radius:16px;
-      padding:18px 34px;
-      font-weight:800; font-size:26px;
+      padding:18px 40px;
+      font-size:26px;
+      border:none;
+      border-radius:15px;
       cursor:pointer;
-      box-shadow:0 16px 35px rgba(0,0,0,.18);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      margin:15px;
+      font-weight:bold;
       touch-action: manipulation;
     }
+
     #yes{
-      background:#24a148; color:#fff;
-      position:absolute; left:50%; transform:translateX(-120%);
-    }
-    #no{
-      background:#dc3545; color:#fff;
-      position:absolute; left:50%; transform:translateX(20%);
+      background:#24a148;
+      color:white;
     }
 
-    .heart{
-      position:fixed; top:-20px;
-      pointer-events:none;
-      animation: fall linear forwards;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
-    }
-    @keyframes fall{
-      to { transform: translateY(110vh); opacity:0; }
+    #no{
+      background:#dc3545;
+      color:white;
+      position:fixed;
     }
   </style>
-
-  <script>
-    let yesScale = 1;
-
-    function moveNo(e){
-      if(e) e.preventDefault();
-
-      const noBtn = document.getElementById("no");
-      const yesBtn = document.getElementById("yes");
-
-      const pad = 12;
-      const w = noBtn.offsetWidth;
-      const h = noBtn.offsetHeight;
-
-      const maxX = Math.max(0, window.innerWidth  - w - pad);
-      const maxY = Math.max(0, window.innerHeight - h - pad);
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      // نخلي الزرار يتحرك على الشاشة كلها
-      noBtn.style.position = "fixed";
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
-      noBtn.style.transform = "none";
-
-      yesScale = Math.min(2.8, yesScale + 0.12);
-      yesBtn.style.transform = translateX(-120%) scale(${yesScale});
-    }
-
-    function yesClicked(){
-      document.body.innerHTML = `
-        <div style="color:white;text-shadow:0 12px 30px rgba(0,0,0,.25);text-align:center;padding:28px 18px;">
-          <h2 style="margin:0 0 10px;font-size:clamp(28px,6vw,54px);">يااااه 😍</h2>
-          <p style="margin:0;font-size:clamp(16px,3vw,20px);">شمس قالت YES! 💍❤️</p>
-        </div>
-      `;
-    }
-
-    function heart(){
-      const el = document.createElement("div");
-      el.className = "heart";
-      el.textContent = "❤️";
-      el.style.left = (Math.random() * window.innerWidth) + "px";
-      el.style.animationDuration = (2.2 + Math.random() * 2.8) + "s";
-      el.style.fontSize = (18 + Math.random() * 18) + "px";
-      document.body.appendChild(el);
-      setTimeout(()=>el.remove(), 5200);
-    }
-
-    window.addEventListener("load", () => {
-      setInterval(heart, 260);
-    });
-  </script>
 </head>
 
 <body>
-  <h1>شمس، هتكوني ڤالنتاين بتاعتي؟ 💖</h1>
-  <p id="msg">اضغط Yes 😄 (وزر No هيهرب)</p>
 
-  <div class="wrap">
-    <button id="yes" type="button" onclick="yesClicked()">Yes 😍</button>
+<h1>Shams, will you be my Valentine? 💖</h1>
 
-    <!-- ✅ هنا الضمان: يتحرك على الضغط/اللمس -->
-    <button id="no" type="button"
-      onclick="moveNo(event)"
-      onpointerdown="moveNo(event)"
-      ontouchstart="moveNo(event)">
-      No 😢
-    </button>
-  </div>
+<button id="yes">Yes 😍</button>
+<button id="no">No 😢</button>
+
+<script>
+  const yesBtn = document.getElementById("yes");
+  const noBtn  = document.getElementById("no");
+
+  function moveNo(){
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top  = y + "px";
+  }
+
+  noBtn.addEventListener("pointerdown", moveNo);
+
+  yesBtn.addEventListener("click", ()=>{
+    document.body.innerHTML =
+      "<h1 style='color:white;font-size:3rem;'>Yaaay 😍 Shams said YES! 💍❤️</h1>";
+  });
+</script>
+
 </body>
 </html>
